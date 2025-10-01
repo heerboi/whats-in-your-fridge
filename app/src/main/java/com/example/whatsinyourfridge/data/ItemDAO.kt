@@ -1,5 +1,6 @@
 package com.example.whatsinyourfridge.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -15,5 +16,5 @@ interface ItemDAO {
     suspend fun delete(item: Item)
 
     @Query("SELECT * FROM Item")
-    suspend fun getAllItems(): List<Item>
+    fun getAllItems(): LiveData<List<Item>>
 }

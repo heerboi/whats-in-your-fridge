@@ -41,9 +41,6 @@ android {
 
 dependencies {
 
-    implementation("com.google.dagger:hilt-android:2.57.2")
-    ksp("com.google.dagger:hilt-compiler:2.57.2")
-
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.databinding.adapters)
     val room_version = "2.8.1"

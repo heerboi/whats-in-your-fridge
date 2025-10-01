@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.data.AppDatabase
 import com.example.whatsinyourfridge.databinding.FragmentAddItemBinding
 
@@ -28,14 +29,14 @@ class AdditemFragment : Fragment() {
 
         val database = AppDatabase.getDatabase(requireContext())
         val itemDao = database.itemDao()
-        val factory = AddItemViewModelFactory(itemDao)
+        val factory = GenericViewModelFactory{
+            AddItemViewModel(itemDao)}
         addItemViewModel = ViewModelProvider(this, factory)[AddItemViewModel::class.java]
 
         _binding = FragmentAddItemBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val addItemButton: Button = binding.addItemButton
-        val viewItemButton: Button = binding.viewItems
         val itemName: TextView = binding.itemName
         val itemDate: TextView = binding.itemDate
         addItemButton.setOnClickListener {
@@ -45,9 +46,6 @@ class AdditemFragment : Fragment() {
             addItemViewModel.addItem(name, date)
         }
 
-        viewItemButton.setOnClickListener {
-            addItemViewModel.getItems()
-        }
         return root
     }
 
