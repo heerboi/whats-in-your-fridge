@@ -39,10 +39,16 @@
 
     <LinearLayout
         android:layout_width="407dp"
-        android:layout_height="303dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="61dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="107dp"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="2dp"
-        tools:layout_editor_absoluteY="61dp">
+        app:layout_constraintBottom_toTopOf="@+id/view_items"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/itemName"
@@ -50,17 +56,39 @@
             android:layout_height="wrap_content"
             android:layout_margin="50px"
             android:ems="10"
-            android:inputType="text"
-            android:text="Name" />
+            android:hint="@string/item_name"
+            android:inputType="text" />
 
         <EditText
             android:id="@+id/itemDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="50px"
+            android:clickable="true"
             android:ems="10"
-            android:inputType="number|numberDecimal"
-            android:text="Name" />
+            android:hint="@string/expiry_date"
+            android:inputType="datetime|date"
+            tools:inputType="date" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="50px"
+            android:ems="10"
+            android:text="@string/select_image"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/darker_gray"
+            android:contentDescription="@string/item_image_description"
+            android:src="@android:drawable/ic_menu_camera" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

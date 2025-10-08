@@ -11,4 +11,9 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="add_item">Add Item</string>
+    <string name="view_items">View Items</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="select_image">Select an Image</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_image_description">Select an Image from Gallery or Camera</string>
 </resources>

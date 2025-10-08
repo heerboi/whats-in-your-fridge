@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.whatsinyourfridge.data.Item
 import com.example.whatsinyourfridge.data.ItemDAO
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class AddItemViewModel(private val itemDao: ItemDAO) : ViewModel() {
 
-    fun addItem(name: String, date: Int) {
+    fun addItem(name: String, date: Date) {
         viewModelScope.launch {
-            val newItem = Item(uid=0, firstName = name, days=date)
+            val newItem = Item(uid=0, firstName = name, date=date)
             itemDao.insertItem(newItem)
         }
     }

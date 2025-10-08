@@ -1,7 +1,8 @@
 package com.example.whatsinyourfridge.data
 
 import android.content.Context
-import androidx.databinding.adapters.Converters
+import com.example.whatsinyourfridge.data.Converters
+import com.example.whatsinyourfridge.data.Item
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -13,7 +14,7 @@ import androidx.room.TypeConverters
     version=1,
     exportSchema = false
 )
-
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun itemDao(): ItemDAO

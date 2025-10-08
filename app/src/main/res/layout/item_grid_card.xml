@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
     app:cardElevation="4dp"
@@ -13,21 +14,29 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
+
         <TextView
             android:id="@+id/itemName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Item Name"
+            android:textAlignment="center"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/itemDays"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Days: 5"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp"/>
+            android:textAlignment="center"
+            android:textSize="14sp" />
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
