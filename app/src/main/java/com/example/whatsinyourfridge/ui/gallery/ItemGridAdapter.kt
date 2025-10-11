@@ -1,5 +1,7 @@
 package com.example.whatsinyourfridge.ui.gallery
 
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.appcompat.view.menu.MenuView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsinyourfridge.R
 import com.example.whatsinyourfridge.data.Item
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -26,11 +29,16 @@ class ItemGridAdapter (private var items: List<Item>) : RecyclerView.Adapter<Ite
         position: Int
     ) {
         val item = items[position]
+        Log.d("ItemGridAdapter", "Binding item: ${item.date}")
         val myFormat = "dd/MM/yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.US)
         holder.itemName.text = item.firstName
-        holder.itemDays.text = "Expiry: ${sdf.format(item.date)}"
-        holder.itemImage.setImageResource(R.drawable.ic_launcher_background)
+        holder.itemDays.setText("Expiry: ${sdf.format(item.date)}")
+        if (item.imagePath != null) {
+            holder.itemImage.setImageURI(Uri.fromFile(File(item.imagePath)))
+        } else {
+            holder.itemImage.setImageResource(R.drawable.ic_launcher_foreground)
+        }
     }
 
     override fun getItemCount() = items.size

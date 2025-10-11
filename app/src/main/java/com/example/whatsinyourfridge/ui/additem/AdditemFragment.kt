@@ -1,24 +1,26 @@
 package com.example.whatsinyourfridge.ui.additem
 
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.DatePicker
 import android.widget.EditText
-import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.data.AppDatabase
 import com.example.whatsinyourfridge.databinding.FragmentAddItemBinding
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 class AdditemFragment : Fragment() {
     private lateinit var addItemViewModel: AddItemViewModel
@@ -28,6 +30,17 @@ class AdditemFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private val calendar = Calendar.getInstance()
+
+    private var selectedImageUri: Uri? = null
+
+    private val pickImageLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) {uri: Uri? ->
+        uri?.let {
+            binding.imageView3.setImageURI(it)
+            selectedImageUri = it
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,18 +57,26 @@ class AdditemFragment : Fragment() {
         _binding = FragmentAddItemBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        binding.imageView3.setOnClickListener { pickImageLauncher.launch("image/*") }
+
         val addItemButton: Button = binding.addItemButton
         val itemName: EditText = binding.itemName
         val itemDate: EditText = binding.itemDate
         itemDate.setOnClickListener { showDatePickerDialog() }
+
         addItemButton.setOnClickListener {
             val name = itemName.text.toString()
             val date: Date = calendar.time
+            var imagePath: String? = null
             val today = Calendar.getInstance().apply {
                 set(Calendar.HOUR_OF_DAY, 0)
                 set(Calendar.MINUTE, 0)
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
+            }
+
+            selectedImageUri?.let {uri ->
+                imagePath = saveImageToInternalStorage(uri)
             }
 
             if (date.before(today.time)) {
@@ -64,7 +85,7 @@ class AdditemFragment : Fragment() {
             }
 
             if (name.isNotBlank() && itemDate.text.isNotBlank()) {
-                addItemViewModel.addItem(name, date)
+                addItemViewModel.addItem(name, date, imagePath)
                 itemName.setText("")
                 itemDate.setText("")
                 calendar.time = Calendar.getInstance().time
@@ -101,8 +122,32 @@ class AdditemFragment : Fragment() {
         binding.itemDate.setText(sdf.format(calendar.time))
     }
 
+
+    private fun saveImageToInternalStorage(uri: Uri): String? {
+        try {
+            val inputStream = requireContext().contentResolver.openInputStream(uri)
+
+            val fileName = "${UUID.randomUUID()}.jpg"
+            val file = File(requireContext().filesDir, fileName)
+
+            val outputStream = FileOutputStream(file)
+
+            inputStream?.copyTo(outputStream)
+
+            inputStream?.close()
+            outputStream.close()
+
+            return file.absolutePath
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

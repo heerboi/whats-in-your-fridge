@@ -9,9 +9,9 @@ import java.util.Date
 
 class AddItemViewModel(private val itemDao: ItemDAO) : ViewModel() {
 
-    fun addItem(name: String, date: Date) {
+    fun addItem(name: String, date: Date, imagePath: String?) {
         viewModelScope.launch {
-            val newItem = Item(uid=0, firstName = name, date=date)
+            val newItem = Item(uid=0, firstName = name, date=date, imagePath=imagePath)
             itemDao.insertItem(newItem)
         }
     }

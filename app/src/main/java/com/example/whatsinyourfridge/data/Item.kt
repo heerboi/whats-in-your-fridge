@@ -9,5 +9,6 @@ import java.util.Date
 data class Item(
     @PrimaryKey(autoGenerate = true) val uid:Int,
     @ColumnInfo(name = "name") val firstName: String?,
-    @ColumnInfo(name = "expiry") val date: Date?
+    @ColumnInfo(name = "expiry") val date: Date?,
+    @ColumnInfo(name="image_path") val imagePath: String?
 )

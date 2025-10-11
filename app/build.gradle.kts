@@ -41,6 +41,9 @@ android {
 
 dependencies {
 
+    implementation("com.github.bumptech.glide:glide:5.0.5")
+    ksp("com.github.bumptech.glide:ksp:5.0.5")
+
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.databinding.adapters)
     val room_version = "2.8.1"
