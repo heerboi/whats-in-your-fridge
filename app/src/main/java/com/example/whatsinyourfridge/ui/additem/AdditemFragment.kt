@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.data.AppDatabase
 import com.example.whatsinyourfridge.databinding.FragmentAddItemBinding
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -86,14 +87,13 @@ class AdditemFragment : Fragment() {
 
             if (name.isNotBlank() && itemDate.text.isNotBlank()) {
                 addItemViewModel.addItem(name, date, imagePath)
+                Snackbar.make(root, "Item ${name} added successfully.", Snackbar.LENGTH_LONG).show()
                 itemName.setText("")
                 itemDate.setText("")
                 calendar.time = Calendar.getInstance().time
-                updateDateInView()
             }
 
         }
-        updateDateInView()
         return root
     }
 

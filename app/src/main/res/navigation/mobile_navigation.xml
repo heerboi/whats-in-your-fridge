@@ -26,4 +26,5 @@
         android:id="@+id/nav_additem"
         android:name="com.example.whatsinyourfridge.ui.additem.AdditemFragment"
         android:label="@string/add_item" />
+
 </navigation>

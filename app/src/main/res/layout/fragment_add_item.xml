@@ -5,39 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/add_item_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="159dp"
-        android:layout_marginTop="562dp"
-        android:layout_marginEnd="159dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/add_item"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/view_items"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="159dp"
-        android:layout_marginTop="562dp"
-        android:layout_marginEnd="159dp"
-        android:layout_marginBottom="122dp"
-        android:text="view items"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="407dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
@@ -45,10 +14,11 @@
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="107dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/view_items"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.507">
 
         <EditText
             android:id="@+id/itemName"
@@ -64,18 +34,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="50px"
-            android:clickable="true"
             android:ems="10"
+            android:focusable="false"
+            android:clickable="true"
             android:hint="@string/expiry_date"
-            android:inputType="datetime|date"
-            tools:inputType="date" />
+            android:inputType="text" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="50px"
-            android:ems="10"
+            android:layout_margin="20px"
             android:text="@string/select_image"
             android:textAlignment="center"
             android:textSize="18sp" />
@@ -85,10 +54,29 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
             android:background="@android:color/darker_gray"
             android:contentDescription="@string/item_image_description"
             android:src="@android:drawable/ic_menu_camera" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="49dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout">
+
+        <Button
+            android:id="@+id/add_item_button"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add_item" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
