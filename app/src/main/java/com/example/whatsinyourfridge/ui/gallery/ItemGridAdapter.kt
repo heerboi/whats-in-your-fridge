@@ -15,7 +15,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class ItemGridAdapter (private var items: List<Item>) : RecyclerView.Adapter<ItemGridAdapter.ItemViewHolder>() {
+class ItemGridAdapter (private var items: List<Item>, private val onDeleteClicked: (Item) -> Unit) : RecyclerView.Adapter<ItemGridAdapter.ItemViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -39,6 +39,9 @@ class ItemGridAdapter (private var items: List<Item>) : RecyclerView.Adapter<Ite
         } else {
             holder.itemImage.setImageResource(R.drawable.ic_launcher_foreground)
         }
+
+        holder.deleteItemButton.setOnClickListener { onDeleteClicked(item)
+        true}
     }
 
     override fun getItemCount() = items.size
@@ -52,6 +55,8 @@ class ItemGridAdapter (private var items: List<Item>) : RecyclerView.Adapter<Ite
         val itemName: TextView = view.findViewById(R.id.itemName)
         val itemDays: TextView = view.findViewById(R.id.itemDays)
         val itemImage: ImageView = view.findViewById(R.id.imageView2)
+
+        val deleteItemButton: ImageView = view.findViewById(R.id.deleteItemButton)
 
     }
 

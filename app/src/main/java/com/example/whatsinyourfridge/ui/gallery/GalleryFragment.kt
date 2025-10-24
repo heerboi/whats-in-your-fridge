@@ -15,6 +15,7 @@ import com.example.whatsinyourfridge.R
 import com.example.whatsinyourfridge.data.AppDatabase
 import com.example.whatsinyourfridge.databinding.FragmentGalleryBinding
 import com.example.whatsinyourfridge.databinding.FragmentItemListBinding
+import com.google.android.material.snackbar.Snackbar
 
 class GalleryFragment : Fragment() {
 
@@ -44,7 +45,11 @@ class GalleryFragment : Fragment() {
         val factory = GenericViewModelFactory{ GalleryViewModel(itemDao) }
         galleryViewModel = ViewModelProvider(this, factory)[GalleryViewModel::class.java]
 
-        adapter = ItemGridAdapter(emptyList())
+        adapter = ItemGridAdapter(emptyList(), onDeleteClicked = { item ->
+            galleryViewModel.deleteItem(item)
+
+            Snackbar.make(view, "Item deleted", Snackbar.LENGTH_LONG).show()
+        })
 
         setupRecyclerView()
 
@@ -58,9 +63,10 @@ class GalleryFragment : Fragment() {
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.grid_spacing)
 
         binding.itemsRecyclerView.layoutManager = GridLayoutManager(requireContext(), spanCount)
-
         binding.itemsRecyclerView.adapter = adapter
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
