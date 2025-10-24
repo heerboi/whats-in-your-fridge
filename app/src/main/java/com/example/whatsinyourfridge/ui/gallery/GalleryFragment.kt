@@ -1,21 +1,21 @@
 package com.example.whatsinyourfridge.ui.gallery
 
-import android.graphics.Rect
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.R
 import com.example.whatsinyourfridge.data.AppDatabase
-import com.example.whatsinyourfridge.databinding.FragmentGalleryBinding
 import com.example.whatsinyourfridge.databinding.FragmentItemListBinding
 import com.google.android.material.snackbar.Snackbar
+
 
 class GalleryFragment : Fragment() {
 
@@ -46,9 +46,18 @@ class GalleryFragment : Fragment() {
         galleryViewModel = ViewModelProvider(this, factory)[GalleryViewModel::class.java]
 
         adapter = ItemGridAdapter(emptyList(), onDeleteClicked = { item ->
-            galleryViewModel.deleteItem(item)
 
-            Snackbar.make(view, "Item deleted", Snackbar.LENGTH_LONG).show()
+            this.context?.let { AlertDialog.Builder(it) }
+                ?.setTitle("Delete ${item.firstName} Item")
+                ?.setMessage("Do you really want to delete this item?")
+                ?.setIcon(android.R.drawable.ic_dialog_alert)
+                ?.setPositiveButton("Yes"
+                ) { dialog, whichButton ->
+                    galleryViewModel.deleteItem(item)
+                    dialog.dismiss()
+                    Snackbar.make(view, "${item.firstName} Deleted", Snackbar.LENGTH_LONG).show()
+                }
+                ?.setNegativeButton("No", null)?.show()
         })
 
         setupRecyclerView()
