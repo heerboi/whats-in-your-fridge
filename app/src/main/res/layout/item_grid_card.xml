@@ -9,7 +9,8 @@
     app:cardElevation="4dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/grid_card_layout"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
@@ -25,38 +26,41 @@
             android:textAlignment="viewEnd"
             app:srcCompat="@android:drawable/btn_dialog" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:maxWidth="150dp"
-                android:maxHeight="150dp"
-                android:minWidth="150dp"
-                android:minHeight="150dp"
-                android:paddingLeft="10sp"
-                android:paddingRight="10sp"
-                android:scaleType="fitCenter"
-                tools:srcCompat="@tools:sample/avatars" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:maxWidth="150dp"
+            android:maxHeight="150dp"
+            android:minWidth="150dp"
+            android:minHeight="150dp"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/itemName"
             android:layout_width="131dp"
             android:layout_height="wrap_content"
+            android:alpha="1"
             android:paddingTop="10sp"
             android:text="Item Name"
             android:textAlignment="center"
+            android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/itemDays"
-            android:layout_width="132dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Days: 5"
             android:textAlignment="center"
+            android:textColor="#020202"
             android:textSize="14sp" />
     </LinearLayout>
 

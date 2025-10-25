@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.R
+import com.example.whatsinyourfridge.SharedViewModel
 import com.example.whatsinyourfridge.data.AppDatabase
 import com.example.whatsinyourfridge.databinding.FragmentItemListBinding
 import com.google.android.material.snackbar.Snackbar
@@ -27,6 +29,8 @@ class GalleryFragment : Fragment() {
 
     private lateinit var galleryViewModel: GalleryViewModel
     private lateinit var adapter: ItemGridAdapter
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,8 +66,12 @@ class GalleryFragment : Fragment() {
 
         setupRecyclerView()
 
-        galleryViewModel.items.observe(viewLifecycleOwner) { items ->
+        galleryViewModel.filteredItems.observe(viewLifecycleOwner) { items ->
             adapter.updateItems(items)
+        }
+
+        sharedViewModel.searchQuery.observe(viewLifecycleOwner) {query ->
+            galleryViewModel.filterItems(query)
         }
     }
 
