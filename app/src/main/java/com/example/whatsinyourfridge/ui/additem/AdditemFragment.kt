@@ -3,12 +3,16 @@ package com.example.whatsinyourfridge.ui.additem
 import android.app.DatePickerDialog
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.whatsinyourfridge.GenericViewModelFactory
@@ -34,6 +38,8 @@ class AdditemFragment : Fragment() {
 
     private var selectedImageUri: Uri? = null
 
+    private var cameraImageUri: Uri? = null
+
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) {uri: Uri? ->
@@ -41,6 +47,13 @@ class AdditemFragment : Fragment() {
             binding.imageView3.setImageURI(it)
             selectedImageUri = it
         }
+    }
+
+    private val takePictureLauncher: ActivityResultLauncher<Uri> = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        selectedImageUri = cameraImageUri
+        binding.imageView3.setImageURI(selectedImageUri)
     }
 
     override fun onCreateView(
@@ -58,7 +71,7 @@ class AdditemFragment : Fragment() {
         _binding = FragmentAddItemBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.imageView3.setOnClickListener { pickImageLauncher.launch("image/*") }
+        binding.imageView3.setOnClickListener { showImageSourceDialog() }
 
         val addItemButton: Button = binding.addItemButton
         val itemName: EditText = binding.itemName
@@ -90,13 +103,54 @@ class AdditemFragment : Fragment() {
                 Snackbar.make(root, "Item ${name} added successfully.", Snackbar.LENGTH_LONG).show()
                 itemName.setText("")
                 itemDate.setText("")
+                binding.imageView3.setImageResource(android.R.drawable.ic_menu_camera)
+                selectedImageUri = null
+                cameraImageUri = null
                 calendar.time = Calendar.getInstance().time
+            }
+            else {
+                Snackbar.make(requireView(), "Item name or date cannot be empty", Snackbar.LENGTH_SHORT).show()
             }
 
         }
         return root
     }
 
+    private fun showImageSourceDialog() {
+        val options = arrayOf("Take Photo", "Choose from Gallery", "Cancel")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select Image")
+            .setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> dispatchTakePictureIntent()
+                    1 -> pickImageLauncher.launch("image/*")
+                    2 -> dialog.dismiss()
+                }
+            }.show()
+    }
+
+    private fun dispatchTakePictureIntent() {
+        val imageFile = createImageFile()
+
+        cameraImageUri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            imageFile
+        )
+
+        takePictureLauncher.launch(cameraImageUri)
+    }
+
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        )
+    }
     private fun showDatePickerDialog() {
         val dateSetListener = DatePickerDialog.OnDateSetListener {
             _, year, month, dayOfMonth ->

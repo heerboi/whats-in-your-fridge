@@ -19,9 +19,7 @@ import androidx.navigation.Navigation.findNavController
 import com.example.whatsinyourfridge.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    // TODO: make deletion
     // TODO: make logic for handling near-to-expiry/expired stuff
-    // TODO: color code: red: expired, yellow: about-to, green: very good
     // TODO: categorize: Pantry, Fresh Prod, Meat, Dairy
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
