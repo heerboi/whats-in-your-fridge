@@ -42,6 +42,8 @@ android {
 dependencies {
 
     implementation("com.github.bumptech.glide:glide:5.0.5")
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     ksp("com.github.bumptech.glide:ksp:5.0.5")
 
     implementation(libs.androidx.room.common.jvm)

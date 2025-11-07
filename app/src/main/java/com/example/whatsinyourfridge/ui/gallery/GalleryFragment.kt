@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.R
@@ -62,7 +63,12 @@ class GalleryFragment : Fragment() {
                     Snackbar.make(view, "${item.firstName} Deleted", Snackbar.LENGTH_LONG).show()
                 }
                 ?.setNegativeButton("No", null)?.show()
-        })
+        },
+            onItemClicked = { item ->
+                sharedViewModel.selectedItem.value = item
+                findNavController().navigate(R.id.action_nav_gallery_to_itemFragment)
+            }
+        )
 
         setupRecyclerView()
 

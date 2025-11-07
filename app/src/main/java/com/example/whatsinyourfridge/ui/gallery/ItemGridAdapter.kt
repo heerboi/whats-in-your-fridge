@@ -23,7 +23,8 @@ import java.time.ZoneId
 import java.util.Calendar
 import java.util.Locale
 
-class ItemGridAdapter (private var items: List<Item>, private val onDeleteClicked: (Item) -> Unit) : RecyclerView.Adapter<ItemGridAdapter.ItemViewHolder>() {
+class ItemGridAdapter (private var items: List<Item>, private val onDeleteClicked: (Item) -> Unit,
+    private val onItemClicked: (Item) -> Unit) : RecyclerView.Adapter<ItemGridAdapter.ItemViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -83,6 +84,10 @@ class ItemGridAdapter (private var items: List<Item>, private val onDeleteClicke
 
         holder.deleteItemButton.setOnClickListener { onDeleteClicked(item)
         true}
+
+        holder.itemView.setOnClickListener {
+            onItemClicked(item)
+        }
     }
 
     override fun getItemCount() = items.size
