@@ -23,7 +23,7 @@ import java.time.ZoneId
 import java.util.Calendar
 import java.util.Locale
 
-class ItemGridAdapter (private var items: List<Item>, private val onDeleteClicked: (Item) -> Unit,
+class ItemGridAdapter (private var items: List<Item>,
     private val onItemClicked: (Item) -> Unit) : RecyclerView.Adapter<ItemGridAdapter.ItemViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -82,9 +82,6 @@ class ItemGridAdapter (private var items: List<Item>, private val onDeleteClicke
             holder.itemImage.setImageResource(R.drawable.ic_launcher_foreground)
         }
 
-        holder.deleteItemButton.setOnClickListener { onDeleteClicked(item)
-        true}
-
         holder.itemView.setOnClickListener {
             onItemClicked(item)
         }
@@ -97,15 +94,17 @@ class ItemGridAdapter (private var items: List<Item>, private val onDeleteClicke
         notifyDataSetChanged()
     }
 
+
+
     class ItemViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val itemName: TextView = view.findViewById(R.id.itemName)
         val itemDays: TextView = view.findViewById(R.id.itemDays)
         val itemImage: ImageView = view.findViewById(R.id.imageView2)
-
-        val deleteItemButton: ImageView = view.findViewById(R.id.deleteItemButton)
-
         val gridCardLayout: View = view.findViewById(R.id.grid_card_layout)
 
     }
 
+    fun getItemAt(position: Int): Item {
+        return items[position]
+    }
 }

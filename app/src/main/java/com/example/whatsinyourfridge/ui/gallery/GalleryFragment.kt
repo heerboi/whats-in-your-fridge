@@ -12,6 +12,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.R
 import com.example.whatsinyourfridge.SharedViewModel
@@ -50,20 +52,7 @@ class GalleryFragment : Fragment() {
         val factory = GenericViewModelFactory{ GalleryViewModel(itemDao) }
         galleryViewModel = ViewModelProvider(this, factory)[GalleryViewModel::class.java]
 
-        adapter = ItemGridAdapter(emptyList(), onDeleteClicked = { item ->
-
-            this.context?.let { AlertDialog.Builder(it) }
-                ?.setTitle("Delete ${item.firstName} Item")
-                ?.setMessage("Do you really want to delete this item?")
-                ?.setIcon(android.R.drawable.ic_dialog_alert)
-                ?.setPositiveButton("Yes"
-                ) { dialog, whichButton ->
-                    galleryViewModel.deleteItem(item)
-                    dialog.dismiss()
-                    Snackbar.make(view, "${item.firstName} Deleted", Snackbar.LENGTH_LONG).show()
-                }
-                ?.setNegativeButton("No", null)?.show()
-        },
+        adapter = ItemGridAdapter(emptyList(),
             onItemClicked = { item ->
                 sharedViewModel.selectedItem.value = item
                 findNavController().navigate(R.id.action_nav_gallery_to_itemFragment)
@@ -71,6 +60,7 @@ class GalleryFragment : Fragment() {
         )
 
         setupRecyclerView()
+        attachSwipeToDelete()
 
         galleryViewModel.filteredItems.observe(viewLifecycleOwner) { items ->
             adapter.updateItems(items)
@@ -87,6 +77,52 @@ class GalleryFragment : Fragment() {
 
         binding.itemsRecyclerView.layoutManager = GridLayoutManager(requireContext(), spanCount)
         binding.itemsRecyclerView.adapter = adapter
+    }
+
+    private fun attachSwipeToDelete() {
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+
+                val itemToDelete = adapter.getItemAt(position)
+
+                this@GalleryFragment.context?.let { AlertDialog.Builder(it) }
+                    ?.setTitle("Delete ${itemToDelete.firstName} Item")
+                    ?.setMessage("Do you really want to delete this item?")
+                    ?.setIcon(android.R.drawable.ic_dialog_alert)
+                    ?.setPositiveButton("Yes") { dialog, _ ->
+                        galleryViewModel.deleteItem(itemToDelete)
+                        dialog.dismiss()
+                        view?.let { v ->
+                            Snackbar.make(v, "${itemToDelete.firstName} Deleted", Snackbar.LENGTH_LONG).show()
+                        }
+                    }
+                    ?.setNegativeButton("No") { dialog, _ ->
+                        // If user says "No", notify the adapter to redraw the item
+                        adapter.notifyItemChanged(position)
+                        dialog.dismiss()
+                    }
+                    ?.setOnCancelListener {
+                        // Also handle case where user clicks outside the dialog
+                        adapter.notifyItemChanged(position)
+                    }
+                    ?.show()
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+
+        itemTouchHelper.attachToRecyclerView(binding.itemsRecyclerView)
     }
 
 
