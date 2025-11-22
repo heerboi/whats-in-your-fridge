@@ -7,6 +7,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
@@ -17,6 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.whatsinyourfridge.GenericViewModelFactory
 import com.example.whatsinyourfridge.data.AppDatabase
+import com.example.whatsinyourfridge.data.Category
+import com.example.whatsinyourfridge.data.CategoryDAO
+import com.example.whatsinyourfridge.data.Item
 import com.example.whatsinyourfridge.databinding.FragmentAddItemBinding
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
@@ -64,14 +68,32 @@ class AdditemFragment : Fragment() {
 
         val database = AppDatabase.getDatabase(requireContext())
         val itemDao = database.itemDao()
+        val categoryDao = database.categoryDao()
+
         val factory = GenericViewModelFactory{
-            AddItemViewModel(itemDao)}
+            AddItemViewModel(itemDao, categoryDao)}
         addItemViewModel = ViewModelProvider(this, factory)[AddItemViewModel::class.java]
 
         _binding = FragmentAddItemBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.imageView3.setOnClickListener { showImageSourceDialog() }
+
+        val spinner = binding.categorySpinner
+        var categoryList: List<Category> = emptyList()
+
+        addItemViewModel.allCategories.observe(viewLifecycleOwner) {categories ->
+            val noCategory = Category(id = -1, name = "No Category") // Use a non-existent ID like -1
+            val categoriesWithNone = mutableListOf(noCategory).apply { addAll(categories)}
+            val spinnerAdapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                categoriesWithNone
+            ).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            spinner.adapter = spinnerAdapter
+        }
 
         val addItemButton: Button = binding.addItemButton
         val itemName: EditText = binding.itemName
@@ -99,14 +121,25 @@ class AdditemFragment : Fragment() {
             }
 
             if (name.isNotBlank() && itemDate.text.isNotBlank()) {
-                addItemViewModel.addItem(name, date, imagePath)
+
+                val selectedCategory = spinner.selectedItem as? Category
+                val selectedCategoryId = if (selectedCategory?.id == -1 || selectedCategory == null) {
+                    null
+                } else{
+                    selectedCategory.id
+                }
+
+                val newItem = Item(
+                    uid = 0,
+                    firstName = name,
+                    date = date,
+                    imagePath = imagePath,
+                    categoryId = selectedCategoryId
+                )
+                addItemViewModel.addItem(newItem)
+
                 Snackbar.make(root, "Item ${name} added successfully.", Snackbar.LENGTH_LONG).show()
-                itemName.setText("")
-                itemDate.setText("")
-                binding.imageView3.setImageResource(android.R.drawable.ic_menu_camera)
-                selectedImageUri = null
-                cameraImageUri = null
-                calendar.time = Calendar.getInstance().time
+                resetForm()
             }
             else {
                 Snackbar.make(requireView(), "Item name or date cannot be empty", Snackbar.LENGTH_SHORT).show()
@@ -201,6 +234,17 @@ class AdditemFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun resetForm() {
+        binding.itemName.setText("")
+        binding.itemDate.setText("")
+        binding.itemDate.error = null // Also clear errors
+        binding.imageView3.setImageResource(android.R.drawable.ic_menu_camera)
+        selectedImageUri = null
+        cameraImageUri = null
+        // Reset calendar to current time to avoid issues with next entry
+        calendar.time = Date()
     }
 
 

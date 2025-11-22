@@ -18,6 +18,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun itemDao(): ItemDAO
+    abstract fun categoryDao(): CategoryDAO
 
     companion object {
         @Volatile
@@ -31,6 +32,12 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_2_3 = object: Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Category_name` ON `Category` (`name`)")
+            }
+        }
+
         fun getDatabase(context: Context) : AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -38,7 +45,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                 INSTANCE=instance
                 instance

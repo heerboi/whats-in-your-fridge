@@ -1,12 +1,14 @@
 package com.example.whatsinyourfridge.ui.gallery
 
 import android.content.DialogInterface
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +22,7 @@ import com.example.whatsinyourfridge.SharedViewModel
 import com.example.whatsinyourfridge.data.AppDatabase
 import com.example.whatsinyourfridge.databinding.FragmentItemListBinding
 import com.google.android.material.snackbar.Snackbar
+import androidx.core.graphics.drawable.toDrawable
 
 
 class GalleryFragment : Fragment() {
@@ -72,7 +75,7 @@ class GalleryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val spanCount = 2
+        val spanCount = 1
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.grid_spacing)
 
         binding.itemsRecyclerView.layoutManager = GridLayoutManager(requireContext(), spanCount)
@@ -118,6 +121,43 @@ class GalleryFragment : Fragment() {
                         adapter.notifyItemChanged(position)
                     }
                     ?.show()
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+
+                val itemView = viewHolder.itemView
+                val background =
+                    ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
+                        .toDrawable()
+
+                if (dX > 0) {
+                    background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                }
+                else if (dX < 0) {
+                    background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                }
+                else {
+                    background.setBounds(0, 0, 0, 0)
+                }
+
+                background.draw(c)
             }
         }
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
