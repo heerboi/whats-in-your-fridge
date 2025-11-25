@@ -23,6 +23,7 @@ import com.example.whatsinyourfridge.data.AppDatabase
 import com.example.whatsinyourfridge.databinding.FragmentItemListBinding
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.graphics.drawable.toDrawable
+import com.example.whatsinyourfridge.data.Category
 
 
 class GalleryFragment : Fragment() {
@@ -52,10 +53,11 @@ class GalleryFragment : Fragment() {
 
         val database = AppDatabase.getDatabase(requireContext())
         val itemDao = database.itemDao()
-        val factory = GenericViewModelFactory{ GalleryViewModel(itemDao) }
+        val categoryDao = database.categoryDao()
+        val factory = GenericViewModelFactory{ GalleryViewModel(itemDao, categoryDao) }
         galleryViewModel = ViewModelProvider(this, factory)[GalleryViewModel::class.java]
 
-        adapter = ItemGridAdapter(emptyList(),
+        adapter = ItemGridAdapter(emptyList(), emptyList(),
             onItemClicked = { item ->
                 sharedViewModel.selectedItem.value = item
                 findNavController().navigate(R.id.action_nav_gallery_to_itemFragment)
@@ -67,6 +69,9 @@ class GalleryFragment : Fragment() {
 
         galleryViewModel.filteredItems.observe(viewLifecycleOwner) { items ->
             adapter.updateItems(items)
+        }
+        galleryViewModel.allCategories.observe(viewLifecycleOwner) { categories ->
+            adapter.updateCategories(categories)
         }
 
         sharedViewModel.searchQuery.observe(viewLifecycleOwner) {query ->

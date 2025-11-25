@@ -13,6 +13,7 @@ import androidx.appcompat.view.menu.MenuView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsinyourfridge.R
+import com.example.whatsinyourfridge.data.Category
 import com.example.whatsinyourfridge.data.Item
 import java.io.File
 import java.text.SimpleDateFormat
@@ -23,7 +24,7 @@ import java.time.ZoneId
 import java.util.Calendar
 import java.util.Locale
 
-class ItemGridAdapter (private var items: List<Item>,
+class ItemGridAdapter (private var items: List<Item>, private var categories: List<Category>,
     private val onItemClicked: (Item) -> Unit) : RecyclerView.Adapter<ItemGridAdapter.ItemViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -82,6 +83,13 @@ class ItemGridAdapter (private var items: List<Item>,
             holder.itemImage.setImageResource(R.drawable.ic_launcher_foreground)
         }
 
+        if (item.categoryId != null) {
+            val category = categories.find { it.id == item.categoryId }
+            holder.categoryName.text = category?.name ?: "No Category"
+        } else {
+            holder.categoryName.text = "No Category"
+        }
+
         holder.itemView.setOnClickListener {
             onItemClicked(item)
         }
@@ -94,6 +102,11 @@ class ItemGridAdapter (private var items: List<Item>,
         notifyDataSetChanged()
     }
 
+    fun updateCategories(newCategories: List<Category>) {
+        categories = newCategories
+        notifyDataSetChanged()
+    }
+
 
 
     class ItemViewHolder (view: View) : RecyclerView.ViewHolder(view) {
@@ -102,6 +115,7 @@ class ItemGridAdapter (private var items: List<Item>,
         val itemImage: ImageView = view.findViewById(R.id.imageView2)
         val gridCardLayout: View = view.findViewById(R.id.grid_card_layout)
 
+        val categoryName: TextView = view.findViewById(R.id.categoryName)
     }
 
     fun getItemAt(position: Int): Item {

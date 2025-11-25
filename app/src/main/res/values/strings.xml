@@ -18,4 +18,5 @@
     <string name="item_image_description">Select an Image from Gallery or Camera</string>
     <string name="fab_description">Add New Item</string>
     <string name="select_category">Select Category</string>
+    <string name="category_name">Category\n</string>
 </resources>
